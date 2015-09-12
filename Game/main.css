@@ -1,0 +1,7 @@
+/**
+ * The main stylesheet file
+ **/
+
+#gl-canvas {
+  border: 0.5em solid black;
+}
