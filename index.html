@@ -1,0 +1,37 @@
+<!DOCTYPE html>
+<html>
+    <head>
+    </head>
+    <body>
+        <canvas id="webGL" width="300" height="300"></canvas>
+    	<script src='utils/shaderLoader.js'></script>
+        <script type="text/javascript">
+            var canvas = document.getElementById("webGL");
+            var gl = canvas.getContext("webgl");
+            var vertexPosBuffer = gl.createBuffer();
+
+
+    		gl.bindBuffer(gl.ARRAY_BUFFER, vertexPosBuffer);
+    		var vertices =
+            [
+                 0.0,  0.0, 0.0,
+                 1.0,  0.0, 0.0,
+                 0.0,  1.0, 0.0,
+                -1.0,  0.0, 0.0,
+                 0.0, -1.0, 0.0,
+                 1.0,  0.0, 0.0
+            ];
+    		gl.bufferData(gl.ARRAY_BUFFER, new Float32Array(vertices), gl.STATIC_DRAW);
+
+            function initProgram(program, amount) {
+                gl.useProgram(program);
+                program.vertexPosAttrib = gl.getAttribLocation(program, 'pos');
+                gl.enableVertexAttribArray(program.vertexPosAttrib);
+                gl.vertexAttribPointer(program.vertexPosAttrib, 3, gl.FLOAT, false, 0, 0);
+                gl.drawArrays(gl.TRIANGLE_FAN, 0, amount);
+            }
+
+            loadProgram('vshader-00.txt', 'fshader-00.txt', initProgram, 6);
+        </script>
+    </body>
+</html>

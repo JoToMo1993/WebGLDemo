@@ -1,0 +1,80 @@
+<!DOCTYPE html>
+<html>
+    <head>
+    </head>
+    <body>
+        <canvas id="webGL" width="300" height="300"></canvas>
+    	<script src='utils/shaderLoader.js'></script>
+        <script type="text/javascript">
+            var canvas = document.getElementById("webGL");
+            var gl = canvas.getContext("webgl");
+            var vertexPosBuffer = gl.createBuffer();
+
+            function vectorMultiply(vector, matrix) {
+                var result = [];
+
+                for (var i = 0; i < matrix.length; i++) {
+                    row = matrix[i];
+                    sum = 0;
+                    for (var j = 0; j < row.length; j++) {
+                        sum = sum + row[j] * vector[j];
+                    }
+                    result[i] = sum;
+                }
+
+                return result;
+            }
+
+            function Disc (radius, corners, center) {
+                this.center  = center;
+                this.radius  = radius;
+                this.corners = corners;
+
+                this.getPointList = function() {
+                    var vertices = [].concat(center);
+
+                    var cur = [radius, 0.0, 0.0, 1.0];
+
+                    degree = 2*Math.PI / corners;
+                    m11 =  Math.cos(degree);
+                    m12 = -Math.sin(degree);
+                    m21 =  Math.sin(degree);
+                    m22 =  Math.cos(degree);
+                    var mat =
+                    [
+                        [m11, m12, 0.0, 0.0],
+                        [m21, m22, 0.0, 0.0],
+                        [0.0, 0.0, 1.0, 0.0],
+                        [0.0, 0.0, 0.0, 1.0]
+                    ];
+
+                    vertices.push(cur[0], cur[1], cur[2]);
+
+                    for (var i = 0; i < corners; i++) {
+                        cur = vectorMultiply(cur, mat);
+
+                        vertices.push(cur[0], cur[1], cur[2]);
+                    }
+
+                    return vertices;
+                }
+            }
+
+            disc = new Disc(0.9, 32.0, [0.0, 0.0, 0.0]);
+
+    		gl.bindBuffer(gl.ARRAY_BUFFER, vertexPosBuffer);
+    		var vertices = disc.getPointList();
+    		gl.bufferData(gl.ARRAY_BUFFER, new Float32Array(vertices), gl.STATIC_DRAW);
+
+            function initProgram(program, amount) {
+                gl.useProgram(program);
+                program.vertexPosAttrib = gl.getAttribLocation(program, 'pos');
+                gl.enableVertexAttribArray(program.vertexPosAttrib);
+                gl.vertexAttribPointer(program.vertexPosAttrib, 3, gl.FLOAT, false, 0, 0);
+                gl.drawArrays(gl.TRIANGLE_FAN, 0, amount);
+            }
+
+            loadProgram('vshader-00.txt', 'fshader-00.txt', initProgram, vertices.length/3);
+        </script>
+    </body>
+</html>
