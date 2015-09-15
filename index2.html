@@ -14,7 +14,7 @@
 
     		    gl.enable(gl.DEPTH_TEST);
     		    gl.clearColor(0,0,0,1);
-            
+
             var vertexPosBuffer = gl.createBuffer();
 
             function vectorMultiply(vector, matrix) {
@@ -42,7 +42,7 @@
 
                     var cur = [radius, 0.0, 0.0, 1.0];
 
-                    degree = 2*Math.PI / corners;
+                    degree = ( (2 * Math.PI) / corners );
                     m11 =  Math.cos(degree);
                     m13 = -Math.sin(degree);
                     m31 =  Math.sin(degree);
@@ -81,7 +81,7 @@
                 gl.drawArrays(gl.TRIANGLE_FAN, 0, amount);
             }
 
-            loadProgram('vshader-00.txt', 'fshader-00.txt', initProgram, vertices.length/3);
+            loadProgram('vshader-00.c', 'fshader-00.c', initProgram, (vertices.length / 3) );
         </script>
     </body>
 </html>
